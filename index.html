@@ -434,6 +434,11 @@
            <textarea id="content" name="content" placeholder="ใส่รายละเอียดหรือข้อความประกอบรูป" required></textarea>
          </div>
 
+         <div class="field" id="promptField" style="display: none;">
+           <label for="prompt">Prompt (field name: <code>prompt</code>) <span class="hint">(ไม่บังคับ)</span></label>
+           <textarea id="prompt" name="prompt" placeholder="ใส่พรอมป์สำหรับระบบปลายทาง (ไม่ใส่ก็ได้)"></textarea>
+         </div>
+
         
 
                  <div class="field">
@@ -477,7 +482,7 @@
          <div class="modal-body">
            <div class="field">
              <label for="prompt">Prompt (field name: <code>prompt</code>) <span class="hint">(ไม่บังคับ)</span></label>
-             <textarea id="prompt" name="prompt" placeholder="ใส่พรอมป์สำหรับระบบปลายทาง (ไม่ใส่ก็ได้)"></textarea>
+             <textarea id="promptModal" placeholder="ใส่พรอมป์สำหรับระบบปลายทาง (ไม่ใส่ก็ได้)"></textarea>
            </div>
          </div>
          <div class="modal-footer">
@@ -496,7 +501,9 @@
          const scheduledAtInput = document.getElementById('scheduled_at');
          const postTimingRadios = document.querySelectorAll('input[name="post_timing"]');
          const promptToggle = document.getElementById('promptToggle');
+         const promptField = document.getElementById('promptField');
          const promptModal = document.getElementById('promptModal');
+         const promptModalTextarea = document.getElementById('promptModal');
          const closePromptModal = document.getElementById('closePromptModal');
          const savePrompt = document.getElementById('savePrompt');
          const cancelPrompt = document.getElementById('cancelPrompt');
@@ -508,39 +515,20 @@
                  function clearForm() {
            form.reset();
            resetPreview();
-           // ลบ active state ของ prompt toggle
+           // ซ่อน prompt field และลบ active state
+           promptField.style.display = 'none';
            promptToggle.classList.remove('active');
          }
 
-                 // จัดการการแสดง/ซ่อน prompt modal
+                 // จัดการการแสดง/ซ่อน prompt field
          promptToggle.addEventListener('click', () => {
-           promptModal.style.display = 'block';
-           promptToggle.classList.add('active');
-         });
-
-         // ปิด modal เมื่อกดปุ่มปิด
-         closePromptModal.addEventListener('click', () => {
-           promptModal.style.display = 'none';
-           promptToggle.classList.remove('active');
-         });
-
-         // บันทึก prompt และปิด modal
-         savePrompt.addEventListener('click', () => {
-           promptModal.style.display = 'none';
-           promptToggle.classList.remove('active');
-         });
-
-         // ยกเลิกและปิด modal
-         cancelPrompt.addEventListener('click', () => {
-           promptModal.style.display = 'none';
-           promptToggle.classList.remove('active');
-         });
-
-         // ปิด modal เมื่อคลิกพื้นหลัง
-         promptModal.addEventListener('click', (e) => {
-           if (e.target === promptModal) {
-             promptModal.style.display = 'none';
+           const isVisible = promptField.style.display !== 'none';
+           if (isVisible) {
+             promptField.style.display = 'none';
              promptToggle.classList.remove('active');
+           } else {
+             promptField.style.display = 'block';
+             promptToggle.classList.add('active');
            }
          });
 
