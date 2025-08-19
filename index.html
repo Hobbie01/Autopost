@@ -349,7 +349,7 @@
         height: 100%;
         background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(8px);
-        animation: fadeIn 0.3s ease;
+        animation: fadeIn 0.2s ease;
       }
 
       .loading-popup.show {
@@ -370,7 +370,7 @@
         padding: 40px;
         text-align: center;
         box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-        animation: slideUp 0.4s ease;
+        animation: slideUp 0.25s ease;
         max-width: 400px;
         width: 90%;
       }
@@ -378,7 +378,7 @@
       @keyframes slideUp {
         from {
           opacity: 0;
-          transform: translateY(30px) scale(0.9);
+          transform: translateY(20px) scale(0.95);
         }
         to {
           opacity: 1;
@@ -400,17 +400,17 @@
         border: 3px solid transparent;
         border-top: 3px solid var(--accent);
         border-radius: 50%;
-        animation: spin 1.2s linear infinite;
+        animation: spin 0.8s linear infinite;
       }
 
       .spinner-ring:nth-child(2) {
         border-top-color: var(--accent-2);
-        animation-delay: -0.4s;
+        animation-delay: -0.27s;
       }
 
       .spinner-ring:nth-child(3) {
         border-top-color: var(--muted);
-        animation-delay: -0.8s;
+        animation-delay: -0.53s;
       }
 
       @keyframes spin {
@@ -445,7 +445,7 @@
         background: linear-gradient(90deg, var(--accent), var(--accent-2));
         border-radius: 2px;
         width: 0%;
-        animation: progress 2s ease-in-out infinite;
+        animation: progress 1.5s ease-in-out infinite;
       }
 
       @keyframes progress {
@@ -461,7 +461,7 @@
 
       .loading-dots::after {
         content: '';
-        animation: dots 1.5s steps(4, end) infinite;
+        animation: dots 1s steps(4, end) infinite;
       }
 
       @keyframes dots {
@@ -469,6 +469,179 @@
         40% { content: '.'; }
         60% { content: '..'; }
         80%, 100% { content: '...'; }
+      }
+
+      /* Success Alert Popup Styles */
+      .success-alert {
+        display: none;
+        position: fixed;
+        z-index: 3000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        animation: fadeIn 0.3s ease;
+      }
+
+      .success-alert.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .success-content {
+        background: var(--card);
+        border: 1px solid var(--accent-2);
+        border-radius: 24px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 30px 80px rgba(162, 255, 204, 0.3);
+        animation: successSlideUp 0.4s ease;
+        max-width: 450px;
+        width: 90%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .success-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-2), var(--accent));
+        animation: successProgress 2s ease-in-out;
+      }
+
+      @keyframes successProgress {
+        0% { width: 0%; }
+        100% { width: 100%; }
+      }
+
+      @keyframes successSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 24px;
+        background: linear-gradient(135deg, var(--accent-2), var(--accent));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: successIconPop 0.6s ease 0.2s both;
+        box-shadow: 0 15px 35px rgba(162, 255, 204, 0.4);
+      }
+
+      @keyframes successIconPop {
+        0% {
+          transform: scale(0) rotate(-180deg);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.2) rotate(0deg);
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+
+      .success-icon svg {
+        width: 40px;
+        height: 40px;
+        color: var(--bg);
+        animation: checkmarkDraw 0.8s ease 0.4s both;
+      }
+
+      @keyframes checkmarkDraw {
+        0% {
+          stroke-dasharray: 0 100;
+          stroke-dashoffset: 100;
+        }
+        100% {
+          stroke-dasharray: 100 100;
+          stroke-dashoffset: 0;
+        }
+      }
+
+      .success-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--accent-2);
+        margin-bottom: 12px;
+        animation: successTextFade 0.6s ease 0.6s both;
+      }
+
+      .success-message {
+        font-size: 16px;
+        color: var(--text);
+        line-height: 1.5;
+        margin-bottom: 32px;
+        animation: successTextFade 0.6s ease 0.8s both;
+      }
+
+      @keyframes successTextFade {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .success-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        animation: successTextFade 0.6s ease 1s both;
+      }
+
+      .success-btn {
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 200ms ease;
+        border: none;
+        font-size: 14px;
+      }
+
+      .success-btn.primary {
+        background: linear-gradient(135deg, var(--accent-2), var(--accent));
+        color: var(--bg);
+        box-shadow: 0 8px 20px rgba(162, 255, 204, 0.3);
+      }
+
+      .success-btn.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(162, 255, 204, 0.4);
+      }
+
+      .success-btn.secondary {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+
+      .success-btn.secondary:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--accent);
+        color: var(--accent);
       }
 
              @media (max-width: 860px) {
@@ -533,6 +706,32 @@
          .loading-subtext {
            font-size: 13px;
          }
+         
+         /* Success alert responsive */
+         .success-content {
+           padding: 30px 24px;
+           max-width: 400px;
+         }
+         
+         .success-icon {
+           width: 60px;
+           height: 60px;
+           margin-bottom: 20px;
+         }
+         
+         .success-icon svg {
+           width: 30px;
+           height: 30px;
+         }
+         
+         .success-title {
+           font-size: 20px;
+         }
+         
+         .success-message {
+           font-size: 14px;
+           margin-bottom: 24px;
+         }
        }
 
        @media (max-width: 480px) {
@@ -566,6 +765,42 @@
          
          .loading-subtext {
            font-size: 12px;
+         }
+         
+         /* Success alert responsive for small screens */
+         .success-content {
+           padding: 24px 20px;
+           max-width: 320px;
+         }
+         
+         .success-icon {
+           width: 50px;
+           height: 50px;
+           margin-bottom: 16px;
+         }
+         
+         .success-icon svg {
+           width: 25px;
+           height: 25px;
+         }
+         
+         .success-title {
+           font-size: 18px;
+         }
+         
+         .success-message {
+           font-size: 13px;
+           margin-bottom: 20px;
+         }
+         
+         .success-actions {
+           flex-direction: column;
+           gap: 8px;
+         }
+         
+         .success-btn {
+           padding: 14px 20px;
+           font-size: 15px;
          }
        }
     </style>
@@ -630,15 +865,7 @@
            <div class="hint">เลือก "โพสต์ทันที" หรือ "ตั้งเวลา" ตามต้องการ</div>
          </div>
 
-        <div class="field">
-          <label for="page_count">จำนวนเพจ (field name: <code>page_count</code>) <span class="hint">(ไม่บังคับ)</span></label>
-          <input type="number" id="page_count" name="page_count" min="1" max="100" placeholder="1" />
-          <div class="hint">จำนวนเพจที่จะโพสต์ (1-100)</div>
-        </div>
-
-        
-
-                 <div class="actions">
+         <div class="actions">
            <span class="ghost" id="resultHint">ระบบจะส่งข้อมูลและเคลียร์ฟอร์มทันที</span>
            <button type="submit" class="primary" id="sendBtn">ส่ง</button>
          </div>
@@ -790,13 +1017,8 @@
              formData.delete('scheduled_at');
            }
 
-           const pageCount = (formData.get('page_count') ?? '').toString().trim();
-           if (pageCount === '' || pageCount === '0') {
-             formData.delete('page_count');
-           }
-
-           // ป้องกันการส่งซ้ำ
-           sendBtn.disabled = true;
+            // ป้องกันการส่งซ้ำ
+            sendBtn.disabled = true;
 
            const endpoint = form.getAttribute('action');
 
@@ -810,8 +1032,8 @@
                body: formData,
              });
 
-             // รอสักครู่เพื่อให้ผู้ใช้เห็น loading animation
-             await new Promise(resolve => setTimeout(resolve, 1500));
+             // รอสักครู่เพื่อให้ผู้ใช้เห็น loading animation (ลดจาก 1500ms เป็น 800ms)
+             await new Promise(resolve => setTimeout(resolve, 800));
 
              // ซ่อน loading popup
              hideLoadingPopup();
@@ -841,10 +1063,48 @@
           statusMessage.style.color = 'var(--accent-2)';
           statusMessage.style.borderColor = 'var(--accent-2)';
           
+          // แสดง custom success alert popup
+          const successAlert = document.createElement('div');
+          successAlert.className = 'success-alert show';
+          successAlert.innerHTML = `
+            <div class="success-content">
+              <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <path d="m9 11 3 3L22 4"/>
+                </svg>
+              </div>
+              <div class="success-title">สำเร็จ!</div>
+              <div class="success-message">${message}</div>
+              <div class="success-actions">
+                <button class="success-btn primary" onclick="closeSuccessAlert(this)">ตกลง</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(successAlert);
+
           // ซ่อนข้อความหลังจาก 5 วินาที
           setTimeout(() => {
-            statusMessage.classList.remove('show');
+            if (successAlert.parentNode) {
+              successAlert.classList.remove('show');
+              setTimeout(() => {
+                if (successAlert.parentNode) {
+                  successAlert.remove();
+                }
+              }, 300);
+            }
           }, 5000);
+        }
+
+        // ฟังก์ชันปิด success alert
+        function closeSuccessAlert(button) {
+          const alert = button.closest('.success-alert');
+          alert.classList.remove('show');
+          setTimeout(() => {
+            if (alert.parentNode) {
+              alert.remove();
+            }
+          }, 300);
         }
 
         function showErrorMessage(message) {
@@ -859,13 +1119,13 @@
           }, 8000);
         }
 
-        // ดัก submit ทั้งหมดให้ส่งแบบไม่เปลี่ยนหน้าเสมอ
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
-          if (!form.reportValidity()) return; // ตรวจ validation พื้นฐาน
-          sendAjax();
-        });
-      })();
+         // ดัก submit ทั้งหมดให้ส่งแบบไม่เปลี่ยนหน้าเสมอ
+         form.addEventListener('submit', (e) => {
+           e.preventDefault();
+           if (!form.reportValidity()) return; // ตรวจ validation พื้นฐาน
+           sendAjax();
+         });
+       })();
     </script>
   </body>
   </html>
