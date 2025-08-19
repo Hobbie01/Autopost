@@ -338,6 +338,139 @@
 
       .error { color: var(--danger); }
 
+      /* Loading Popup Styles */
+      .loading-popup {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        animation: fadeIn 0.3s ease;
+      }
+
+      .loading-popup.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .loading-content {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        animation: slideUp 0.4s ease;
+        max-width: 400px;
+        width: 90%;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .loading-spinner {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 24px;
+        position: relative;
+      }
+
+      .spinner-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 3px solid transparent;
+        border-top: 3px solid var(--accent);
+        border-radius: 50%;
+        animation: spin 1.2s linear infinite;
+      }
+
+      .spinner-ring:nth-child(2) {
+        border-top-color: var(--accent-2);
+        animation-delay: -0.4s;
+      }
+
+      .spinner-ring:nth-child(3) {
+        border-top-color: var(--muted);
+        animation-delay: -0.8s;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .loading-text {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 12px;
+      }
+
+      .loading-subtext {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .loading-progress {
+        width: 100%;
+        height: 4px;
+        background: rgba(126, 161, 255, 0.2);
+        border-radius: 2px;
+        margin-top: 24px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        border-radius: 2px;
+        width: 0%;
+        animation: progress 2s ease-in-out infinite;
+      }
+
+      @keyframes progress {
+        0% { width: 0%; }
+        50% { width: 70%; }
+        100% { width: 100%; }
+      }
+
+      .loading-dots {
+        display: inline-block;
+        margin-left: 4px;
+      }
+
+      .loading-dots::after {
+        content: '';
+        animation: dots 1.5s steps(4, end) infinite;
+      }
+
+      @keyframes dots {
+        0%, 20% { content: ''; }
+        40% { content: '.'; }
+        60% { content: '..'; }
+        80%, 100% { content: '...'; }
+      }
+
              @media (max-width: 860px) {
          body { padding: 16px; }
          .container { 
@@ -380,6 +513,26 @@
          .modal-header, .modal-body, .modal-footer {
            padding: 16px 20px;
          }
+         
+         /* Loading popup responsive */
+         .loading-content {
+           padding: 30px 24px;
+           max-width: 350px;
+         }
+         
+         .loading-spinner {
+           width: 60px;
+           height: 60px;
+           margin-bottom: 20px;
+         }
+         
+         .loading-text {
+           font-size: 16px;
+         }
+         
+         .loading-subtext {
+           font-size: 13px;
+         }
        }
 
        @media (max-width: 480px) {
@@ -394,6 +547,26 @@
          .preview { height: 180px; }
          .field { gap: 10px; }
          .hint { font-size: 11px; }
+         
+         /* Loading popup responsive for small screens */
+         .loading-content {
+           padding: 24px 20px;
+           max-width: 300px;
+         }
+         
+         .loading-spinner {
+           width: 50px;
+           height: 50px;
+           margin-bottom: 16px;
+         }
+         
+         .loading-text {
+           font-size: 15px;
+         }
+         
+         .loading-subtext {
+           font-size: 12px;
+         }
        }
     </style>
   </head>
@@ -469,7 +642,25 @@
            <span class="ghost" id="resultHint">ระบบจะส่งข้อมูลและเคลียร์ฟอร์มทันที</span>
            <button type="submit" class="primary" id="sendBtn">ส่ง</button>
          </div>
+
+         <div class="status" id="statusMessage"></div>
        </form>
+     </div>
+
+     <!-- Loading Popup -->
+     <div id="loadingPopup" class="loading-popup">
+       <div class="loading-content">
+         <div class="loading-spinner">
+           <div class="spinner-ring"></div>
+           <div class="spinner-ring"></div>
+           <div class="spinner-ring"></div>
+         </div>
+         <div class="loading-text">กำลังส่งข้อมูลไปยัง Webhook<span class="loading-dots"></span></div>
+         <div class="loading-subtext">กรุณารอสักครู่ ระบบกำลังประมวลผลข้อมูลของคุณ</div>
+         <div class="loading-progress">
+           <div class="progress-bar"></div>
+         </div>
+       </div>
      </div>
 
      <!-- Prompt Modal Popup -->
@@ -507,9 +698,19 @@
          const closePromptModal = document.getElementById('closePromptModal');
          const savePrompt = document.getElementById('savePrompt');
          const cancelPrompt = document.getElementById('cancelPrompt');
+         const loadingPopup = document.getElementById('loadingPopup');
+         const statusMessage = document.getElementById('statusMessage');
 
         function resetPreview() {
           preview.innerHTML = '<span class="hint">ตัวอย่างรูปจะแสดงที่นี่</span>';
+        }
+
+        function showLoadingPopup() {
+          loadingPopup.classList.add('show');
+        }
+
+        function hideLoadingPopup() {
+          loadingPopup.classList.remove('show');
         }
 
                  function clearForm() {
@@ -518,6 +719,8 @@
            // ซ่อน prompt field และลบ active state
            promptField.style.display = 'none';
            promptToggle.classList.remove('active');
+           statusMessage.textContent = ''; // ลบข้อความสถานะ
+           statusMessage.classList.remove('show');
          }
 
                  // จัดการการแสดง/ซ่อน prompt field
@@ -598,23 +801,63 @@
            const endpoint = form.getAttribute('action');
 
            try {
-             // ส่งข้อมูลแบบ fire-and-forget (ไม่รอผลลัพธ์)
-             fetch(endpoint, {
+             // แสดง loading popup
+             showLoadingPopup();
+
+             // ส่งข้อมูลและรอการตอบกลับ
+             const response = await fetch(endpoint, {
                method: 'POST',
                body: formData,
-             }).catch(() => {
-               // ไม่สนใจ error
              });
 
-             // เคลียร์ฟอร์มทันที
-             clearForm();
+             // รอสักครู่เพื่อให้ผู้ใช้เห็น loading animation
+             await new Promise(resolve => setTimeout(resolve, 1500));
+
+             // ซ่อน loading popup
+             hideLoadingPopup();
+
+             // ตรวจสอบสถานะการตอบกลับ
+             if (response.ok) {
+               // สำเร็จ - แสดงข้อความและเคลียร์ฟอร์ม
+               showSuccessMessage('ส่งข้อมูลสำเร็จ! ระบบได้ประมวลผลข้อมูลของคุณแล้ว');
+               clearForm();
+             } else {
+               // ไม่สำเร็จ - แสดงข้อความ error
+               showErrorMessage(`เกิดข้อผิดพลาด: ${response.status} ${response.statusText}`);
+             }
+
            } catch (err) {
-             // กรณี error ในการเตรียมข้อมูล → เคลียร์ฟอร์มเหมือนกัน
-             clearForm();
+             // กรณี error ในการเชื่อมต่อ
+             hideLoadingPopup();
+             showErrorMessage('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
            } finally {
              sendBtn.disabled = false;
            }
          }
+
+        function showSuccessMessage(message) {
+          statusMessage.textContent = message;
+          statusMessage.className = 'status show';
+          statusMessage.style.color = 'var(--accent-2)';
+          statusMessage.style.borderColor = 'var(--accent-2)';
+          
+          // ซ่อนข้อความหลังจาก 5 วินาที
+          setTimeout(() => {
+            statusMessage.classList.remove('show');
+          }, 5000);
+        }
+
+        function showErrorMessage(message) {
+          statusMessage.textContent = message;
+          statusMessage.className = 'status show';
+          statusMessage.style.color = 'var(--danger)';
+          statusMessage.style.borderColor = 'var(--danger)';
+          
+          // ซ่อนข้อความหลังจาก 8 วินาที
+          setTimeout(() => {
+            statusMessage.classList.remove('show');
+          }, 8000);
+        }
 
         // ดัก submit ทั้งหมดให้ส่งแบบไม่เปลี่ยนหน้าเสมอ
         form.addEventListener('submit', (e) => {
