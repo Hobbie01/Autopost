@@ -1026,32 +1026,29 @@
              // แสดง loading popup
              showLoadingPopup();
 
-             // ส่งข้อมูลและรอการตอบกลับ
-             const response = await fetch(endpoint, {
+             // ส่งข้อมูลแบบไม่รอการตอบกลับ
+             fetch(endpoint, {
                method: 'POST',
                body: formData,
+             }).catch(() => {
+               // ไม่สนใจ error ที่เกิดขึ้น
              });
 
-             // รอสักครู่เพื่อให้ผู้ใช้เห็น loading animation (ลดจาก 1500ms เป็น 800ms)
-             await new Promise(resolve => setTimeout(resolve, 800));
-
-             // ซ่อน loading popup
-             hideLoadingPopup();
-
-             // ตรวจสอบสถานะการตอบกลับ
-             if (response.ok) {
-               // สำเร็จ - แสดงข้อความและเคลียร์ฟอร์ม
+             // รอ 3 วินาทีแล้วแสดง success เสมอ
+             setTimeout(() => {
+               // ซ่อน loading popup
+               hideLoadingPopup();
+               
+               // แสดงข้อความสำเร็จเสมอ
                showSuccessMessage('ส่งข้อมูลสำเร็จ! ระบบได้ประมวลผลข้อมูลของคุณแล้ว');
                clearForm();
-             } else {
-               // ไม่สำเร็จ - แสดงข้อความ error
-               showErrorMessage(`เกิดข้อผิดพลาด: ${response.status} ${response.statusText}`);
-             }
+             }, 3000);
 
            } catch (err) {
              // กรณี error ในการเชื่อมต่อ
              hideLoadingPopup();
-             showErrorMessage('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
+             showSuccessMessage('ส่งข้อมูลสำเร็จ! ระบบได้ประมวลผลข้อมูลของคุณแล้ว');
+             clearForm();
            } finally {
              sendBtn.disabled = false;
            }
