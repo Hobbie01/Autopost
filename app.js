@@ -13,14 +13,30 @@ const routes = require('./routes');
 // Import middleware
 const { errorHandler, requestLogger } = require('./middleware/auth');
 
-// Import database for cleanup
-const db = require('./config/database');
+// Import database for cleanup (use Vercel-compatible version in production)
+const db = process.env.NODE_ENV === 'production' 
+  ? require('./config/database-vercel') 
+  : require('./config/database');
 
 const app = new Koa();
 
 // Session configuration
 app.keys = [process.env.SESSION_SECRET || 'your-secret-key'];
-app.use(session(app));
+
+// Session configuration for Vercel
+const sessionConfig = {
+  key: 'autopost.sess',
+  maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  overwrite: true,
+  httpOnly: true,
+  signed: true,
+  rolling: false,
+  renew: false,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax'
+};
+
+app.use(session(sessionConfig, app));
 
 // Middleware
 app.use(errorHandler);
@@ -32,11 +48,13 @@ app.use(views('views', { extension: 'ejs' }));
 // Routes
 app.use(routes.routes()).use(routes.allowedMethods());
 
-// Cleanup old data (run daily at midnight)
-cron.schedule('0 0 * * *', () => {
-  db.cleanup();
-  console.log('🧹 Cleaned up old data');
-});
+// Cleanup old data (run daily at midnight) - only in non-serverless environments
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+  cron.schedule('0 0 * * *', () => {
+    db.cleanup();
+    console.log('🧹 Cleaned up old data');
+  });
+}
 
 // Error handling
 app.on('error', (err, ctx) => {

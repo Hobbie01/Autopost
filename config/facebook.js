@@ -5,7 +5,10 @@ class FacebookConfig {
     this.apiVersion = process.env.FACEBOOK_API_VERSION || 'v23.0';
     this.appId = process.env.FACEBOOK_APP_ID;
     this.appSecret = process.env.FACEBOOK_APP_SECRET;
-    this.redirectUri = process.env.FACEBOOK_REDIRECT_URI || 'http://localhost:3000/auth/facebook/callback';
+    this.redirectUri = process.env.FACEBOOK_REDIRECT_URI || 
+      (process.env.NODE_ENV === 'production' 
+        ? `https://${process.env.VERCEL_URL}/auth/facebook/callback`
+        : 'http://localhost:3000/auth/facebook/callback');
     this.baseUrl = 'https://graph.facebook.com';
   }
 
@@ -17,7 +20,7 @@ class FacebookConfig {
       'publish_to_groups'
     ].join(',');
 
-    return `${this.baseUrl}/${this.apiVersion}/dialog/oauth?` +
+    return `https://www.facebook.com/${this.apiVersion}/dialog/oauth?` +
       `client_id=${this.appId}&` +
       `redirect_uri=${encodeURIComponent(this.redirectUri)}&` +
       `scope=${scopes}&` +
